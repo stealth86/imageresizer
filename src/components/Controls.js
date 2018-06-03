@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import {switchDownload} from '../actions/ControlAction';
 import './Controls.css';
 
 class Controls extends Component {
@@ -6,11 +8,13 @@ class Controls extends Component {
     constructor(props) {
         super(props);
         this.updatefiles = this.updatefiles.bind(this);
+        this.switchDownload = this.props.switchDownload.bind(this);
     }
 
     updatefiles() {
         this.refs.lab.innerHTML = this.refs.selectfile.files.length + " Files Chosen";
     }
+
     render() {
         return (
             <div className="row">
@@ -23,10 +27,11 @@ class Controls extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="col"/>
+                <div className="col">
+                </div>
                 <div className="col-md-auto">
                     <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1"/>
+                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" onChange={this.switchDownload}/>
                         <label className="form-check-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
                     <button className="btn">Resize</button>
@@ -36,4 +41,10 @@ class Controls extends Component {
     }
 }
 
-export default Controls;
+function mapStatetoProps(state) {
+   return{
+       download:state.ControlReducer.download
+   }
+}
+
+export default connect(mapStatetoProps,{switchDownload})(Controls);

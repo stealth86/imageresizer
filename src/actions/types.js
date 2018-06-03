@@ -1,0 +1,1 @@
+export const SWITCH_DOWNLOAD = "SWITCH_DOWNLOAD";
