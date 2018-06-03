@@ -88,7 +88,7 @@ class App extends Component {
         <div className="jumbotron">
           <h1 className="display-4">Image Resizer</h1>
           <p className="lead">
-            This Webapp is simple image resizer for JPEG images
+            This Webapp is simple image resizer for JPEG images.
             It utilizes Html Canves element to resize image and download to your 
             Downloads directory automatically with the desired resolution.
           </p>

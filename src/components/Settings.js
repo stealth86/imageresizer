@@ -5,7 +5,7 @@ class Settings extends Component {
     render() {
         return (
                 <form className="form-container">
-                    <label>Settings</label>
+                    <label><h3>Settings</h3></label>
                     <hr/>
                     <div className="form-group row">
                         <label htmlFor="width" className="col-md-auto col-form-label">Width</label>

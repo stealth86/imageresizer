@@ -26,7 +26,7 @@ class Controls extends Component {
                 <div className="col"/>
                 <div className="col-md-auto">
                     <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1"/>
                         <label className="form-check-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
                     <button className="btn">Resize</button>
