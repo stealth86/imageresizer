@@ -14,7 +14,7 @@ class Controls extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col">
+                <div className="col-md-4">
                     <div className="input-group mb-3">
                         <div className="custom-file">
                             <input ref="selectfile" type="file" className="custom-file-input"
@@ -23,19 +23,13 @@ class Controls extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="col">
-                    <div className="row">
-                        
+                <div className="col"/>
+                <div className="col-md-auto">
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                        <label className="form-check-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
-                </div>
-                <div className="col">
-                    <div className="row">
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
-                            <label className="form-check-label" htmlFor="inlineCheckbox1">Download</label>
-                        </div>
-                        <button className="btn resize-btn">Resize</button>
-                    </div>
+                    <button className="btn">Resize</button>
                 </div>
             </div>
         );

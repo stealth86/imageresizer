@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Controls from './components/Controls';
+import Settings from './components/Settings';
 import './App.css';
 
 class App extends Component {
@@ -93,6 +94,7 @@ class App extends Component {
           </p>
         </div>
         <Controls />
+        <Settings />
       </div>
     );
   }
