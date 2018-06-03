@@ -1,27 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Switch, Classes } from '@blueprintjs/core';
+import Controls from './components/Controls';
 import './App.css';
-import logo from './logo.svg';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state={
-      download : false
+    this.state = {
+      download: false
     }
     this.ResizeImage = this.ResizeImage.bind(this);
-    this.updatefiles = this.updatefiles.bind(this);
     this.setdownload = this.setdownload.bind(this);
   }
 
-  setdownload(){
-    var downloadvar=!this.state.download;
-    this.setState({download:downloadvar});
-  }
-
-  updatefiles() {
-    console.log(this.refs.lab);
-    this.refs.lab.innerHTML = this.refs.selectfile.files.length + " files chosen";
+  setdownload() {
+    var downloadvar = !this.state.download;
+    this.setState({ download: downloadvar });
   }
 
   ResizeImage() {
@@ -71,7 +64,7 @@ class App extends Component {
       canvas.height = height;
       ctx.drawImage(image, 0, 0, width, height);
       var dataurl = canvas.toDataURL("image/jpeg");
-      document.getElementById('output').src = dataurl;
+      //document.getElementById('output').src = dataurl;
       this.saveBase64AsFile(dataurl, filename)
       //document.getElementById('link').href=dataurl;
     })(file);
@@ -84,26 +77,22 @@ class App extends Component {
 
     link.setAttribute("href", base64);
     link.setAttribute("download", fileName);
-    if(this.state.download)
-    link.click();
+    if (this.state.download)
+      link.click();
   }
 
   render() {
     return (
       <div className="container">
-        <h1>Image Resizer</h1>
-        <div className="choosefile">
-          <label htmlFor="imageFile" className={Classes.BUTTON}>Select Files</label>
-          <label ref="lab">No Files Chosen</label>
-          <input ref="selectfile" id="imageFile" type="file" onChange={this.updatefiles} multiple />
-          <div className="resize">
-          <div className="d-inline">
-          <Switch onChange={this.setdownload} checked={this.state.download} className="d-inline" label="Download"/>
-          </div>
-        <Button onClick={this.ResizeImage} text="Resize Image" />
+        <div className="jumbotron">
+          <h1 className="display-4">Image Resizer</h1>
+          <p className="lead">
+            This Webapp is simple image resizer for JPEG images
+            It utilizes Html Canves element to resize image and download to your 
+            Downloads directory automatically with the desired resolution.
+          </p>
         </div>
-        </div>
-        <img src={logo} id="output" alt="output" />
+        <Controls />
       </div>
     );
   }
