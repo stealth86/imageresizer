@@ -33,7 +33,8 @@ class Controls extends Component {
         this.worker = new ResizeWorker();
         this.worker.onmessage = (event) => {
             //console.log(event.data.image);
-            this.saveByteArray(event.data.image, "xyz.jpeg");
+            if (this.props.download)
+                this.saveByteArray(event.data.image, event.data.filename);
         }
         this.worker.postMessage({
             files: this.refs.selectfile.files,

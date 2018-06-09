@@ -28,7 +28,7 @@ onmessage = (event) => {
                 //console.log(resizedImage);
                 //var b64encoded = btoa(Uint8ToString(resizedImage.data));
                 var blobImage = new Blob([resizedImage.data], { type: "Image/jpeg" });
-                postMessage({ image: blobImage });
+                postMessage({ image: blobImage, filename:infile.name});
             }
             reader.readAsArrayBuffer(infile);
         })(file);
