@@ -19,11 +19,10 @@ class Controls extends Component {
 
     resize() {
         this.worker = new ResizeWorker();
-        var imageObj = new Image();
         this.worker.postMessage({files:this.refs.selectfile.files,
                                 width:this.props.width,
                                 height:this.props.height,
-                                image:imageObj});
+                                });
             //clearTimeout(this.timer);
         /*var filesToUpload = this.refs.selectfile.files;
         for (var i = 0; i < filesToUpload.length; i++) {
