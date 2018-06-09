@@ -1,37 +1,45 @@
-var width=0;
-var height=0;
-var filesToUpload=[];
-var image=null;
+const resizeImage = require("../utils/ResizeImageData");
+const jpegjs = require("jpeg-js");
+var width = 0;
+var height = 0;
+var filesToUpload = [];
 
 onmessage = (event) => {
-    this.width=event.data.width;
-    this.height=event.data.height;
-    this.filesToUpload=event.data.files;
-    this.image=event.data.image;
+    this.width = event.data.width;
+    this.height = event.data.height;
+    this.filesToUpload = event.data.files;
+    this.image = event.data.image;
     //console.log(this.filesToUpload);
     for (var i = 0; i < this.filesToUpload.length; i++) {
         var file = this.filesToUpload[i];
         ((infile) => {
             var reader = new FileReader();
             reader.onload = (e) => {
-                renderimg(e.target.result, infile.name);
+                //console.log(e.target.result);
+                var rawImageData = jpegjs.decode(e.target.result);
+                //console.log(rawImageData);
+                var resizedRawImageData = resizeImage(rawImageData, this.width, this.height);
+                //console.log(resizedRawImageData);
+                var resizedImage = jpegjs.encode({
+                    data: resizedRawImageData.data,
+                    width: this.width,
+                    height: this.height
+                }, 95);
+                //console.log(resizedImage);
+                //var b64encoded = btoa(Uint8ToString(resizedImage.data));
+                var blobImage = new Blob([resizedImage.data], { type: "Image/jpeg" });
+                postMessage({ image: blobImage });
             }
-            reader.readAsDataURL(infile);
+            reader.readAsArrayBuffer(infile);
         })(file);
     }
 }
 
-renderimg = (src, file)=> {
-    console.log(this.image);
-    this.image.onload = ((filename) => () => {
-        console.log(this.height);
-        var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = this.width;
-        canvas.height = this.height;
-        ctx.drawImage(this.image, 0, 0, this.width, this.height);
-        var dataurl = canvas.toDataURL("image/jpeg");
-    })(file);
-    this.image.src = src;
+Uint8ToString = (byteArray) => {
+    var CHUNK_SZ = 0x8000;
+    var result = [];
+    for (var i = 0; i < byteArray.length; i += CHUNK_SZ) {
+        result.push(String.fromCharCode.apply(null, byteArray.subarray(i, i + CHUNK_SZ)));
+    }
+    return result.join("");
 }

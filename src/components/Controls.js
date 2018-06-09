@@ -17,52 +17,30 @@ class Controls extends Component {
         this.refs.lab.innerHTML = this.refs.selectfile.files.length + " Files Chosen";
     }
 
+    saveByteArray = (() => {
+        var a = document.createElement("a");
+        a.style = "display: none";
+        return (blob, name) => {
+            var url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = name;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    })();
+
     resize() {
         this.worker = new ResizeWorker();
+        this.worker.onmessage = (event) => {
+            //console.log(event.data.image);
+            this.saveByteArray(event.data.image, "xyz.jpeg");
+        }
         this.worker.postMessage({
             files: this.refs.selectfile.files,
             width: this.props.width,
             height: this.props.height,
         });
-        //clearTimeout(this.timer);
-        /*var filesToUpload = this.refs.selectfile.files;
-        for (var i = 0; i < filesToUpload.length; i++) {
-            var file = filesToUpload[i];
-            ((infile) => {
-                var reader = new FileReader();
-                reader.onload = (e) => {
-                    this.renderimg(e.target.result, infile.name);
-                }
-                reader.readAsDataURL(infile);
-            })(file);
-        }*/
     }
-
-    renderimg(src, file) {
-        var image = new Image();
-        image.onload = ((filename) => () => {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            canvas.width = this.props.width;
-            canvas.height = this.props.height;
-            ctx.drawImage(image, 0, 0, this.props.width, this.props.height);
-            var dataurl = canvas.toDataURL("image/jpeg");
-            this.saveBase64AsFile(dataurl, filename)
-        })(file);
-        image.src = src;
-    }
-
-    saveBase64AsFile(base64, fileName) {
-
-        var link = document.createElement("a");
-
-        link.setAttribute("href", base64);
-        link.setAttribute("download", fileName);
-        if (this.props.download)
-            link.click();
-    }
-
 
     render() {
         return (
@@ -77,11 +55,11 @@ class Controls extends Component {
                     </div>
                 </div>
                 <div className="col px-4 py-2">
-                        <div className="progress-height progress">
-                            <div className="progress-bar progress-bar-striped progress-bar-animated"
-                                role="progressbar" style={{ width: '70%' }}
-                                aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Processing...</div>
-                        </div>
+                    <div className="progress-height progress">
+                        <div className="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar" style={{ width: '70%' }}
+                            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Processing...</div>
+                    </div>
                 </div>
                 <div className="col-md-auto">
                     <div className="custom-control custom-checkbox float-left p-2">

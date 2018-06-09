@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setHeight, setWidth } from '../actions/SettingAction';
+import { DEFAULT_HEIGHT,DEFAULT_WIDTH} from '../Constants';
 import './Settings.css';
 
 class Settings extends Component {
@@ -20,12 +21,14 @@ class Settings extends Component {
                     <label htmlFor="width" className="col-md-auto col-form-label">Width</label>
                     <div className="col-sm-2">
                         <input type="number" className="form-control" min={32} max={1920}
-                            id="width" onChange={evt => this.setWidth(evt.target.value)} defaultValue={32} />
+                            id="width" onChange={evt => this.setWidth(evt.target.value)} 
+                            defaultValue={DEFAULT_WIDTH} />
                     </div>
                     <label htmlFor="height" className="col-md-auto col-form-label">Height</label>
                     <div className="col-sm-2">
                         <input type="number" className="form-control" min={32} max={1920}
-                            id="height" onChange={evt => this.setHeight(evt.target.value)} defaultValue={32} />
+                            id="height" onChange={evt => this.setHeight(evt.target.value)} 
+                            defaultValue={DEFAULT_HEIGHT} />
                     </div>
                 </div>
             </form>
