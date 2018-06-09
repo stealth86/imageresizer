@@ -13,7 +13,7 @@ class Settings extends Component {
 
     render() {
         return (
-            <form className="form-container">
+            <form className="form-container mb-4">
                 <label><h3>Settings</h3></label>
                 <hr />
                 <div className="form-group row">

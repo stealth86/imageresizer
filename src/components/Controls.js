@@ -19,11 +19,12 @@ class Controls extends Component {
 
     resize() {
         this.worker = new ResizeWorker();
-        this.worker.postMessage({files:this.refs.selectfile.files,
-                                width:this.props.width,
-                                height:this.props.height,
-                                });
-            //clearTimeout(this.timer);
+        this.worker.postMessage({
+            files: this.refs.selectfile.files,
+            width: this.props.width,
+            height: this.props.height,
+        });
+        //clearTimeout(this.timer);
         /*var filesToUpload = this.refs.selectfile.files;
         for (var i = 0; i < filesToUpload.length; i++) {
             var file = filesToUpload[i];
@@ -65,31 +66,29 @@ class Controls extends Component {
 
     render() {
         return (
-            <div className="row">
+            <div className="row mb-4">
                 <div className="col-md-4">
-                    <div className="input-group mb-3">
+                    <div className="input-group">
                         <div className="custom-file">
-                            <input ref="selectfile" type="file" className="custom-file-input"
+                            <input ref="selectfile" type="file" className="custom-file-input btn-primary"
                                 id="inputGroupFile02" onChange={this.updatefiles} multiple="true" />
                             <label ref="lab" className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
                         </div>
                     </div>
                 </div>
-                <div className="col">
-                <div className="processing-status">
-                    <div className="progress-height progress">
-                        <div className="progress-bar progress-bar-striped progress-bar-animated" 
-                        role="progressbar" style={{width: '70%'}} 
-                        aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Processing...</div>
-                    </div>
-                    </div>
-                </div>    
+                <div className="col px-4 py-2">
+                        <div className="progress-height progress">
+                            <div className="progress-bar progress-bar-striped progress-bar-animated"
+                                role="progressbar" style={{ width: '70%' }}
+                                aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Processing...</div>
+                        </div>
+                </div>
                 <div className="col-md-auto">
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" onChange={this.switchDownload} />
-                        <label className="form-check-label" htmlFor="inlineCheckbox1">Download</label>
+                    <div className="custom-control custom-checkbox float-left p-2">
+                        <input className="custom-control-input" type="checkbox" id="inlineCheckbox1" onChange={this.switchDownload} />
+                        <label className="custom-control-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
-                    <button className="btn" onClick={this.resize}>Resize</button>
+                    <button className="btn btn-primary" onClick={this.resize}>Resize</button>
                 </div>
             </div>
         );
