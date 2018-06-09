@@ -4,6 +4,7 @@ import { Router } from 'react-router';
 import { store, history } from './store';
 import Controls from './components/Controls';
 import Settings from './components/Settings';
+import ImageMatrix from './components/ImageMatrix';
 import './App.css';
 
 class App extends Component {
@@ -21,8 +22,9 @@ class App extends Component {
                 Downloads directory automatically with the desired resolution.
           </p>
             </div>
-            <Controls />
             <Settings />
+            <Controls />
+            <ImageMatrix />
           </div>
         </Router>
       </Provider>

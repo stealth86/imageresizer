@@ -7,7 +7,7 @@ export default function (state={download:false}, action) {
                 ...state,
                 download : action.payload
             }
-            default:
+        default:
             return {
                 ...state
             }
