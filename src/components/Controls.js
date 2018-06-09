@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { switchDownload } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
-import './Controls.css';
+import './Controls.less';
 
 class Controls extends Component {
 
@@ -70,7 +70,7 @@ class Controls extends Component {
                 <div className="col-md-4">
                     <div className="input-group">
                         <div className="custom-file">
-                            <input ref="selectfile" type="file" className="custom-file-input btn-primary"
+                            <input ref="selectfile" type="file" className="custom-file-input"
                                 id="inputGroupFile02" onChange={this.updatefiles} multiple="true" />
                             <label ref="lab" className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
                         </div>
