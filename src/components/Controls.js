@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { switchDownload } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
-import './Controls.less';
+import './Controls.css';
 
 class Controls extends Component {
 
