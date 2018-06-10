@@ -20,6 +20,7 @@ class App extends Component {
                 This Webapp is simple image resizer for JPEG images.
                 It utilizes Html Canves element to resize image and download to your
                 Downloads directory automatically with the desired resolution.
+                Currently supports only JPEG images.
           </p>
             </div>
             <Settings />
