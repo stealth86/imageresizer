@@ -2,4 +2,7 @@ export const SWITCH_DOWNLOAD = "SWITCH_DOWNLOAD";
 export const SWITCH_PREVIEW = "SWITCH_PREVIEW";
 export const SET_HEIGHT = "SET_HEIGHT";
 export const SET_WIDTH = "SET_WIDTH";
+export const SET_QUALITY = "SET_QUALITY";
 export const ADD_TO_IMAGE_LIST = "ADD_TO_IMAGE_LIST";
+export const RESET_IMAGE_LIST = "RESET_IMAGE_LIST";
+export const UPDATE_PROGRESS = "UPDATE_PROGRESS";

@@ -4,6 +4,7 @@ const jpegjs = require("jpeg-js");
 onmessage = (event) => {
     this.width = event.data.width;
     this.height = event.data.height;
+    this.quality = event.data.quality;
     this.filesToUpload = event.data.files;
     this.image = event.data.image;
     //console.log(this.filesToUpload);
@@ -21,7 +22,7 @@ onmessage = (event) => {
                     data: resizedRawImageData.data,
                     width: this.width,
                     height: this.height
-                }, 95);
+                }, this.quality);
                 //console.log(resizedImage);
                 //var b64encoded = btoa(Uint8ToString(resizedImage.data));
                 var blobImage = new Blob([resizedImage.data], { type: "Image/jpeg" });
