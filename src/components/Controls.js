@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { switchDownload } from '../actions/ControlAction';
+import { switchDownload,switchPreview,addToImageList } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
 import './Controls.css';
 
@@ -10,11 +10,26 @@ class Controls extends Component {
         super(props);
         this.updatefiles = this.updatefiles.bind(this);
         this.switchDownload = this.props.switchDownload.bind(this);
+        this.switchPreview = this.props.switchPreview.bind(this);
+        this.addToImageList = this.props.addToImageList.bind(this);
         this.resize = this.resize.bind(this);
     }
 
+    componentWillMount = ()=>{
+        this.worker = new ResizeWorker();
+        this.worker.onmessage = (event) => {
+            //console.log(event.data.image);
+            if(this.props.preview){
+                this.saveImageList(event.data.image,event.data.filename,this.addToImageList)
+            }
+            if (this.props.download){
+                this.saveByteArray(event.data.image, event.data.filename);
+            }
+        }
+    }
+
     updatefiles() {
-        this.refs.lab.innerHTML = this.refs.selectfile.files.length + " Files Chosen";
+        this.lab.innerHTML = this.selectfile.files.length + " Files Chosen";
     }
 
     saveByteArray = (() => {
@@ -29,15 +44,17 @@ class Controls extends Component {
         }
     })();
 
-    resize() {
-        this.worker = new ResizeWorker();
-        this.worker.onmessage = (event) => {
-            //console.log(event.data.image);
-            if (this.props.download)
-                this.saveByteArray(event.data.image, event.data.filename);
+    saveImageList = (() => {
+        return (blob, name, callback) => {
+            var url = window.URL.createObjectURL(blob);
+            callback({image:url,
+                      filename:name})
         }
+    })();
+
+    resize() {        
         this.worker.postMessage({
-            files: this.refs.selectfile.files,
+            files: this.selectfile.files,
             width: this.props.width,
             height: this.props.height,
         });
@@ -49,9 +66,9 @@ class Controls extends Component {
                 <div className="col-md-4">
                     <div className="input-group">
                         <div className="custom-file">
-                            <input ref="selectfile" type="file" className="custom-file-input"
+                            <input ref={el => this.selectfile = el} type="file" className="custom-file-input"
                                 id="inputGroupFile02" onChange={this.updatefiles} multiple="true" />
-                            <label ref="lab" className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
+                            <label ref={el => this.lab=el} className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
                         </div>
                     </div>
                 </div>
@@ -63,9 +80,15 @@ class Controls extends Component {
                     </div>
                 </div>
                 <div className="col-md-auto">
-                    <div className="custom-control custom-checkbox float-left p-2">
-                        <input className="custom-control-input" type="checkbox" id="inlineCheckbox1" onChange={this.switchDownload} />
+                    <div className="custom-control custom-checkbox float-left px-4 py-2">
+                        <input className="custom-control-input" type="checkbox" id="inlineCheckbox1" 
+                        onChange={this.switchDownload} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox1">Download</label>
+                    </div>
+                    <div className="custom-control custom-checkbox float-left p-2">
+                        <input className="custom-control-input" type="checkbox" id="inlineCheckbox2" 
+                        onChange={this.switchPreview} />
+                        <label className="custom-control-label" htmlFor="inlineCheckbox2">Preview</label>
                     </div>
                     <button className="btn btn-primary" onClick={this.resize}>Resize</button>
                 </div>
@@ -77,11 +100,14 @@ class Controls extends Component {
 function mapStatetoProps(state) {
     return {
         download: state.ControlReducer.download,
+        preview: state.ControlReducer.preview,
         width: state.SettingReducer.width,
         height: state.SettingReducer.height
     }
 }
 
 export default connect(mapStatetoProps, {
-    switchDownload
+    switchDownload,
+    switchPreview,
+    addToImageList
 })(Controls);

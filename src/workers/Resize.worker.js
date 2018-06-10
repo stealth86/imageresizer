@@ -1,8 +1,5 @@
 const resizeImage = require("../utils/ResizeImageData");
 const jpegjs = require("jpeg-js");
-var width = 0;
-var height = 0;
-var filesToUpload = [];
 
 onmessage = (event) => {
     this.width = event.data.width;
