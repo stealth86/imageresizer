@@ -1,5 +1,6 @@
 export const SWITCH_DOWNLOAD = "SWITCH_DOWNLOAD";
 export const SWITCH_PREVIEW = "SWITCH_PREVIEW";
+export const SWITCH_PERCENT = "SWITCH_PERCENT";
 export const SET_HEIGHT = "SET_HEIGHT";
 export const SET_WIDTH = "SET_WIDTH";
 export const SET_QUALITY = "SET_QUALITY";

@@ -2,22 +2,20 @@ import { SWITCH_DOWNLOAD,SWITCH_PREVIEW,ADD_TO_IMAGE_LIST,
          UPDATE_PROGRESS, 
          RESET_IMAGE_LIST} from './types';
 
-export const switchDownload = () => (dispatch,getState) =>{
-    const{ControlReducer} = getState();
+export const switchDownload = (checked) => (dispatch) =>{
     dispatch(
         {
             type:SWITCH_DOWNLOAD,
-            payload: !ControlReducer.download
+            payload: checked
         }
     )
 }
 
-export const switchPreview = () => (dispatch,getState) =>{
-    const{ControlReducer} = getState();
+export const switchPreview = (checked) => (dispatch) =>{
     dispatch(
         {
             type:SWITCH_PREVIEW,
-            payload: !ControlReducer.preview
+            payload: checked
         }
     )
 }

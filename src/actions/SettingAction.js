@@ -1,4 +1,4 @@
-import { SET_HEIGHT,SET_WIDTH,SET_QUALITY} from './types';
+import { SET_HEIGHT,SET_WIDTH,SET_QUALITY, SWITCH_PERCENT} from './types';
 
 export const setWidth = (width)=>(dispatch)=>{
     dispatch({
@@ -20,3 +20,12 @@ export const setQuality = (quality)=>(dispatch)=>{
         payload:quality
     })
 }
+
+export const switchPercent = (checked)=>(dispatch)=>{
+    dispatch({
+        type:SWITCH_PERCENT,
+        payload:checked
+    })
+}
+
+

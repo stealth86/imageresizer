@@ -112,12 +112,12 @@ class Controls extends Component {
                 <div className="col-md-auto">
                     <div className="custom-control custom-checkbox float-left px-4 py-2">
                         <input className="custom-control-input" type="checkbox" id="inlineCheckbox1"
-                            onChange={this.switchDownload} />
+                            onChange={evt =>this.switchDownload(evt.target.checked)} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
                     <div className="custom-control custom-checkbox float-left p-2">
                         <input className="custom-control-input" type="checkbox" id="inlineCheckbox2"
-                            onChange={this.switchPreview} />
+                            onChange={evt =>this.switchPreview(evt.target.checked)} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox2">Preview</label>
                     </div>
                     <button className="btn btn-primary" onClick={this.resize}>Resize</button>

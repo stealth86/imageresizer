@@ -1,10 +1,11 @@
 import { DEFAULT_HEIGHT,DEFAULT_WIDTH, DEFAULT_QUALITY} from '../Constants';
-import { SET_HEIGHT,SET_WIDTH, SET_QUALITY} from '../actions/types';
+import { SET_HEIGHT,SET_WIDTH, SET_QUALITY, SWITCH_PERCENT} from '../actions/types';
 
 const initialState={
     width:DEFAULT_WIDTH,
     height:DEFAULT_HEIGHT,
-    quality:DEFAULT_QUALITY
+    quality:DEFAULT_QUALITY,
+    usePercent:false
 }
 
 export default function (state=initialState, action) {
@@ -23,6 +24,11 @@ export default function (state=initialState, action) {
             return{
                 ...state,
                 quality : action.payload
+            }
+        case SWITCH_PERCENT:
+            return{
+                ...state,
+                usePercent : action.payload
             }
         default:
             return {
