@@ -78,11 +78,13 @@ class Controls extends Component {
             completed: 0,
             total: 1,
             status:""
-        })
+        })  
         this.worker.postMessage({
             files: this.selectfile.files,
             width: this.props.width,
             height: this.props.height,
+            usePercent: this.props.usePercent,
+            percent: this.props.percent,
             quality: this.props.quality
         });
     }
@@ -134,6 +136,8 @@ function mapStatetoProps(state) {
         preview: state.ControlReducer.preview,
         width: state.SettingReducer.width,
         height: state.SettingReducer.height,
+        percent: state.SettingReducer.percent,
+        usePercent : state.SettingReducer.usePercent,
         quality: state.SettingReducer.quality
     }
 }

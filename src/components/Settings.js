@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setHeight, setWidth, 
-         setQuality,
+         setQuality, setPercent,
          switchPercent
  } from '../actions/SettingAction';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_QUALITY } from '../Constants';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_QUALITY, DEFAULT_PERCENT } from '../Constants';
 import './Settings.css';
 
 class Settings extends Component {
@@ -14,6 +14,7 @@ class Settings extends Component {
         this.setHeight = this.props.setHeight.bind(this);
         this.setWidth = this.props.setWidth.bind(this);
         this.setQuality = this.props.setQuality.bind(this);
+        this.setPercent = this.props.setPercent.bind(this);
         this.switchPercent = this.props.switchPercent.bind(this);
     }
 
@@ -39,9 +40,10 @@ class Settings extends Component {
                         <div className="d-inline custom-control custom-checkbox">
                             <input className="custom-control-input" type="checkbox" id="percent"
                                     onChange={evt => this.switchPercent(evt.target.checked)} />
-                            <label className="custom-control-label" htmlFor="percent">Percent</label>
+                            <label className="custom-control-label" htmlFor="percent">Percent ( {this.props.percent} )</label>
                             <input type="range" className="custom-range" min={10} max={100}
-                                id="percentSlider" />
+                                id="percentSlider" onChange={evt => this.setPercent(evt.target.value)}
+                                defaultValue={DEFAULT_PERCENT} />
                         </div>
                     </div>
                 </div>
@@ -64,6 +66,7 @@ function mapStatetoProps(state) {
         width: state.SettingReducer.width,
         height: state.SettingReducer.height,
         quality: state.SettingReducer.quality,
+        percent: state.SettingReducer.percent,
         usePercent : state.SettingReducer.usePercent
     }
 }
@@ -72,5 +75,6 @@ export default connect(mapStatetoProps, {
     setHeight,
     setWidth,
     setQuality,
+    setPercent,
     switchPercent
 })(Settings);

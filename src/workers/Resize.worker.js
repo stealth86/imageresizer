@@ -6,7 +6,9 @@ onmessage = (event) => {
     this.height = event.data.height;
     this.quality = event.data.quality;
     this.filesToUpload = event.data.files;
-    this.image = event.data.image;
+    this.usePercent = event.data.usePercent;
+    this.percent = event.data.percent;
+    //this.image = event.data.image;
     //console.log(this.filesToUpload);
     for (var i = 0; i < this.filesToUpload.length; i++) {
         var file = this.filesToUpload[i];
@@ -15,7 +17,10 @@ onmessage = (event) => {
             reader.onload = (e) => {
                 //console.log(e.target.result);
                 var rawImageData = jpegjs.decode(e.target.result);
-                //console.log(rawImageData);
+                if(this.usePercent){
+                    this.width=rawImageData.width*this.percent/100
+                    this.height=rawImageData.height*this.percent/100
+                }
                 var resizedRawImageData = resizeImage(rawImageData, this.width, this.height);
                 //console.log(resizedRawImageData);
                 var resizedImage = jpegjs.encode({
