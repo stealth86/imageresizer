@@ -1,5 +1,6 @@
 const resizeImage = require("../utils/ResizeImageData");
 const jpegjs = require("jpeg-js");
+const pngjs = require("pngjs").PNG;
 
 onmessage = (event) => {
     this.width = event.data.width;
@@ -17,9 +18,9 @@ onmessage = (event) => {
             reader.onload = (e) => {
                 //console.log(e.target.result);
                 var rawImageData = jpegjs.decode(e.target.result);
-                if(this.usePercent){
-                    this.width=rawImageData.width*this.percent/100
-                    this.height=rawImageData.height*this.percent/100
+                if (this.usePercent) {
+                    this.width = Math.ceil(rawImageData.width * this.percent / 100)
+                    this.height = Math.ceil(rawImageData.height * this.percent / 100)
                 }
                 var resizedRawImageData = resizeImage(rawImageData, this.width, this.height);
                 //console.log(resizedRawImageData);
@@ -31,18 +32,30 @@ onmessage = (event) => {
                 //console.log(resizedImage);
                 //var b64encoded = btoa(Uint8ToString(resizedImage.data));
                 var blobImage = new Blob([resizedImage.data], { type: "Image/jpeg" });
-                postMessage({ image: blobImage, filename:infile.name});
+                var png = new pngjs({
+                    width: this.width,
+                    height: this.height,
+                    bitDepth: 8,
+                    colorType: 6,
+                    inputColorType: 6,
+                    inputHasAlpha: true
+                });
+
+                png.data = resizedRawImageData.data;
+                var stream = png.pack();
+                var chunks = []
+                stream
+                    .on('data', function (chunk) {
+                        chunks.push(chunk)
+                    })
+                    .on('end', function () {
+                        var blob =  new Blob(chunks, { type: "image/png" })
+                        //console.log(blob)
+                        postMessage({ image: blob, filename: infile.name.replace(/\.[^/.]+$/, "").concat(".png") });
+                    })
+                //postMessage({ image: blobImage, filename: infile.name });
             }
             reader.readAsArrayBuffer(infile);
         })(file);
     }
-}
-
-Uint8ToString = (byteArray) => {
-    var CHUNK_SZ = 0x8000;
-    var result = [];
-    for (var i = 0; i < byteArray.length; i += CHUNK_SZ) {
-        result.push(String.fromCharCode.apply(null, byteArray.subarray(i, i + CHUNK_SZ)));
-    }
-    return result.join("");
 }

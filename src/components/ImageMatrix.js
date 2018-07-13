@@ -8,7 +8,7 @@ class ImageMatrix extends Component {
         return (
             <div className="row">
                 {this.props.imageList.map((image, i) => {
-                    return <div className="col-sm-3 mb-2" key={i}>
+                    return <div className="col-xs-4 col-sm-3 col-md-2 mb-2" key={i}>
                         <div className="card bg-light">
                             <img className="card-img-top" src={image.image} alt="Card cap" />
                             <div className="card-body">

@@ -96,7 +96,7 @@ class Controls extends Component {
                     <div className="input-group">
                         <div className="custom-file">
                             <input ref={el => this.selectfile = el} type="file" className="custom-file-input"
-                                id="inputGroupFile02" onChange={this.updatefiles} multiple="true" />
+                                id="inputGroupFile02" onChange={this.updatefiles} accept=".jpg,.jpeg" multiple="true" />
                             <label ref={el => this.lab = el} className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
                         </div>
                     </div>
