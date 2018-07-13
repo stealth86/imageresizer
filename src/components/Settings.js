@@ -30,15 +30,15 @@ class Settings extends Component {
                             <label className="col-md-2 col-form-label text-right">From</label>
                             <div className="col-md-4">
                                 <select className="custom-select">
-                                    <option value="JPEG">JPEG</option>
-                                    <option value="PNG">PNG</option>
+                                    <option value="jpg">JPEG</option>
+                                    <option value="png">PNG</option>
                                 </select>
                             </div>
                             <label className="col-md-2 col-form-label text-right">To</label>
                             <div className="col-md-4">
                                 <select className="custom-select">
-                                    <option value="JPEG">JPEG</option>
-                                    <option value="PNG">PNG</option>
+                                    <option value="jpg">JPEG</option>
+                                    <option value="png">PNG</option>
                                 </select>
                             </div>
                         </div>
