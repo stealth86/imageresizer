@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import {
     setHeight, setWidth,
     setQuality, setPercent,
-    switchPercent
+    switchPercent,
+    setFromFormat, setToFormat
 } from '../actions/SettingAction';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_QUALITY, DEFAULT_PERCENT } from '../Constants';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_QUALITY, 
+         DEFAULT_PERCENT, FORMAT_JPG, FORMAT_PNG,FORMATS } from '../Constants';
 import './Settings.css';
 
 class Settings extends Component {
@@ -16,6 +18,8 @@ class Settings extends Component {
         this.setWidth = this.props.setWidth.bind(this);
         this.setQuality = this.props.setQuality.bind(this);
         this.setPercent = this.props.setPercent.bind(this);
+        this.setFromFormat = this.props.setFromFormat.bind(this);
+        this.setToFormat = this.props.setToFormat.bind(this);
         this.switchPercent = this.props.switchPercent.bind(this);
     }
 
@@ -29,16 +33,18 @@ class Settings extends Component {
                         <div className="row float-left">
                             <label className="col-md-2 col-form-label text-right">From</label>
                             <div className="col-md-4">
-                                <select className="custom-select">
-                                    <option value="jpg">JPEG</option>
-                                    <option value="png">PNG</option>
+                                <select className="custom-select" onChange={evt=> this.setFromFormat(evt.target.value)} 
+                                defaultValue={FORMAT_JPG}>
+                                    <option value={FORMAT_JPG}>{FORMATS[FORMAT_JPG].value}</option>
+                                    <option value={FORMAT_PNG}>{FORMATS[FORMAT_PNG].value}</option>
                                 </select>
                             </div>
                             <label className="col-md-2 col-form-label text-right">To</label>
                             <div className="col-md-4">
-                                <select className="custom-select">
-                                    <option value="jpg">JPEG</option>
-                                    <option value="png">PNG</option>
+                                <select className="custom-select" onChange={evt=> this.setToFormat(evt.target.value)} 
+                                defaultValue={FORMAT_JPG}>
+                                    <option value={FORMAT_JPG}>{FORMATS[FORMAT_JPG].value}</option>
+                                    <option value={FORMAT_PNG}>{FORMATS[FORMAT_PNG].value}</option>
                                 </select>
                             </div>
                         </div>
@@ -62,11 +68,11 @@ class Settings extends Component {
                 </div>
                 <div className="row mb-2">
                     <div className="col-md-auto">
-                    <div className="custom-control custom-checkbox">
-                        <input className="custom-control-input" type="checkbox" id="percent"
-                            onChange={evt => this.switchPercent(evt.target.checked)} />
-                        <label className="custom-control-label" htmlFor="percent">Percent ( {this.props.percent} )</label>
-                    </div>
+                        <div className="custom-control custom-checkbox">
+                            <input className="custom-control-input" type="checkbox" id="percent"
+                                onChange={evt => this.switchPercent(evt.target.checked)} />
+                            <label className="custom-control-label" htmlFor="percent">Percent ( {this.props.percent} )</label>
+                        </div>
                     </div>
                     <div className="col">
                         <input type="range" className="custom-range" min={10} max={100}
@@ -76,9 +82,9 @@ class Settings extends Component {
                 </div>
                 <div className="row mb-2">
                     <div className="col-md-auto">
-                    <label htmlFor="customRange" className="col-md-auto col-form-label">
-                        Quality ( {this.props.quality} )</label>
-                        </div>
+                        <label htmlFor="customRange" className="col-md-auto col-form-label">
+                            Quality ( {this.props.quality} )</label>
+                    </div>
                     <div className="col pt-2 ">
                         <input type="range" className="custom-range" min={30} max={100} step={5}
                             id="customRange" onChange={evt => this.setQuality(evt.target.value)}
@@ -92,8 +98,6 @@ class Settings extends Component {
 
 function mapStatetoProps(state) {
     return {
-        width: state.SettingReducer.width,
-        height: state.SettingReducer.height,
         quality: state.SettingReducer.quality,
         percent: state.SettingReducer.percent,
         usePercent: state.SettingReducer.usePercent
@@ -105,5 +109,7 @@ export default connect(mapStatetoProps, {
     setWidth,
     setQuality,
     setPercent,
+    setFromFormat,
+    setToFormat,
     switchPercent
 })(Settings);

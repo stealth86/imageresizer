@@ -9,6 +9,7 @@ import {
 } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
 import './Controls.css';
+import { THREADS } from '../Constants';
 
 class Controls extends Component {
 
@@ -24,26 +25,31 @@ class Controls extends Component {
     }
 
     componentWillMount = () => {
-        this.worker = new ResizeWorker();
-        this.worker.onmessage = (event) => {
-            //console.log(event.data.image);
-            var status = "";
-            if (this.props.progress.completed + 1 === this.selectfile.files.length)
-                status = "Completed"
-            else
-                status = "Processing..."
-            this.updateProgress({
-                completed: this.props.progress.completed + 1,
-                total: this.selectfile.files.length,
-                status:status
-            });
-            if (this.props.preview) {
-                this.saveImageList(event.data.image, event.data.filename, this.addToImageList)
-            }
-            if (this.props.download) {
-                this.saveByteArray(event.data.image, event.data.filename);
-            }
+        var status = "";
+        this.workers=[];
+        for (var i = 0; i < THREADS; i++) {
+            this.workers[i] = new ResizeWorker();
         }
+        this.workers.forEach(worker => {
+            worker.onmessage = (event) => {
+                //console.log(event.data.image);
+                if (this.props.progress.completed + 1 === this.selectfile.files.length)
+                    status = "Completed"
+                else
+                    status = "Processing..."
+                this.updateProgress({
+                    completed: this.props.progress.completed + 1,
+                    total: this.selectfile.files.length,
+                    status: status
+                });
+                if (this.props.preview) {
+                    this.saveImageList(event.data.image, event.data.filename, this.addToImageList)
+                }
+                if (this.props.download) {
+                    this.saveByteArray(event.data.image, event.data.filename);
+                }
+            }
+        })
     }
 
     updatefiles() {
@@ -77,16 +83,22 @@ class Controls extends Component {
         this.updateProgress({
             completed: 0,
             total: 1,
-            status:""
-        })  
-        this.worker.postMessage({
-            files: this.selectfile.files,
-            width: this.props.width,
-            height: this.props.height,
-            usePercent: this.props.usePercent,
-            percent: this.props.percent,
-            quality: this.props.quality
-        });
+            status: ""
+        })
+        for (var i = 0; i < (this.selectfile.files.length < THREADS ? this.selectfile.files.length : THREADS); i++) {
+            //console.log(i);
+            this.workers[i].postMessage({
+                file: this.selectfile.files[i],
+                width: this.props.width,
+                height: this.props.height,
+                usePercent: this.props.usePercent,
+                percent: this.props.percent,
+                quality: this.props.quality,
+                fromFormat: this.props.fromFormat,
+                toFormat: this.props.toFormat
+            });
+        }
+
     }
 
     render() {
@@ -103,9 +115,9 @@ class Controls extends Component {
                 </div>
                 <div className="col px-4 py-2">
                     <div className="progress-height progress">
-                        <div className={"progress-bar "+
-                            (this.props.progress.completed===this.props.progress.total ? 'bg-success' : '' ) +
-                             " progress-bar-striped progress-bar-animated"}
+                        <div className={"progress-bar " +
+                            (this.props.progress.completed === this.props.progress.total ? 'bg-success' : '') +
+                            " progress-bar-striped progress-bar-animated"}
                             role="progressbar" style={
                                 { width: this.props.progress.completed * 100 / this.props.progress.total + '%' }}
                             aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{this.props.progress.status}</div>
@@ -114,12 +126,12 @@ class Controls extends Component {
                 <div className="col-md-auto">
                     <div className="custom-control custom-checkbox float-left px-4 py-2">
                         <input className="custom-control-input" type="checkbox" id="inlineCheckbox1"
-                            onChange={evt =>this.switchDownload(evt.target.checked)} />
+                            onChange={evt => this.switchDownload(evt.target.checked)} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
                     <div className="custom-control custom-checkbox float-left p-2">
                         <input className="custom-control-input" type="checkbox" id="inlineCheckbox2"
-                            onChange={evt =>this.switchPreview(evt.target.checked)} />
+                            onChange={evt => this.switchPreview(evt.target.checked)} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox2">Preview</label>
                     </div>
                     <button className="btn btn-primary" onClick={this.resize}>Resize</button>
@@ -137,7 +149,9 @@ function mapStatetoProps(state) {
         width: state.SettingReducer.width,
         height: state.SettingReducer.height,
         percent: state.SettingReducer.percent,
-        usePercent : state.SettingReducer.usePercent,
+        usePercent: state.SettingReducer.usePercent,
+        fromFormat: state.SettingReducer.fromFormat,
+        toFormat: state.SettingReducer.toFormat,
         quality: state.SettingReducer.quality
     }
 }

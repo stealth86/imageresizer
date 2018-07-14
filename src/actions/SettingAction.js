@@ -1,4 +1,4 @@
-import { SET_HEIGHT,SET_WIDTH,SET_QUALITY, SET_PERCENT, SWITCH_PERCENT} from './types';
+import { SET_HEIGHT,SET_WIDTH,SET_QUALITY, SET_PERCENT, SWITCH_PERCENT, SET_FROM_FORMAT, SET_TO_FORMAT} from './types';
 
 export const setWidth = (width)=>(dispatch)=>{
     dispatch({
@@ -32,6 +32,20 @@ export const switchPercent = (checked)=>(dispatch)=>{
     dispatch({
         type:SWITCH_PERCENT,
         payload:checked
+    })
+}
+
+export const setFromFormat = (format) => (dispatch) =>{
+    dispatch({
+        type:SET_FROM_FORMAT,
+        payload:format
+    })
+}
+
+export const setToFormat = (format) => (dispatch) =>{
+    dispatch({
+        type:SET_TO_FORMAT,
+        payload:format
     })
 }
 
