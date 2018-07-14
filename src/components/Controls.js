@@ -9,7 +9,7 @@ import {
 } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
 import './Controls.css';
-import { THREADS } from '../Constants';
+import { THREADS,FORMATS } from '../Constants';
 
 class Controls extends Component {
 
@@ -85,9 +85,10 @@ class Controls extends Component {
             total: 1,
             status: ""
         })
-        for (var i = 0; i < (this.selectfile.files.length < THREADS ? this.selectfile.files.length : THREADS); i++) {
+        //for (var i = 0; i < (this.selectfile.files.length < THREADS ? this.selectfile.files.length : THREADS); i++) {
+            for(var i=0;i<this.selectfile.files.length;i++){
             //console.log(i);
-            this.workers[i].postMessage({
+            this.workers[i%THREADS].postMessage({
                 file: this.selectfile.files[i],
                 width: this.props.width,
                 height: this.props.height,
@@ -108,7 +109,7 @@ class Controls extends Component {
                     <div className="input-group">
                         <div className="custom-file">
                             <input ref={el => this.selectfile = el} type="file" className="custom-file-input"
-                                id="inputGroupFile02" onChange={this.updatefiles} accept=".jpg,.jpeg" multiple="true" />
+                                id="inputGroupFile02" onChange={this.updatefiles} accept={FORMATS[this.props.fromFormat].filetypes} multiple="true" />
                             <label ref={el => this.lab = el} className="custom-file-label" htmlFor="inputGroupFile02">Choose files</label>
                         </div>
                     </div>
