@@ -18,18 +18,19 @@ onmessage = (event) => {
         var reader = new FileReader();
         reader.onload = (e) => {
             //console.log(e.target.result);
+            if(this.fromFormat===CONST.FORMAT_PNG){
+                
+            }
+            else{
             var rawImageData = jpegjs.decode(e.target.result);
+            }
             if (this.usePercent) {
                 this.width = Math.ceil(rawImageData.width * this.percent / 100)
                 this.height = Math.ceil(rawImageData.height * this.percent / 100)
             }
             var resizedRawImageData = resizeImage(rawImageData, this.width, this.height);
             //console.log(resizedRawImageData);
-            var resizedImage = jpegjs.encode({
-                data: resizedRawImageData.data,
-                width: this.width,
-                height: this.height
-            }, this.quality);
+            
             //console.log(resizedImage);
             //var b64encoded = btoa(Uint8ToString(resizedImage.data));
             if (this.toFormat === CONST.FORMAT_PNG) {
@@ -59,6 +60,11 @@ onmessage = (event) => {
                     })
             }
             else {
+                var resizedImage = jpegjs.encode({
+                    data: resizedRawImageData.data,
+                    width: this.width,
+                    height: this.height
+                }, this.quality);
                 var blobImage = new Blob([resizedImage.data], { type: CONST.FORMATS[CONST.FORMAT_JPG].mimetype });
                 postMessage({
                     image: blobImage,
