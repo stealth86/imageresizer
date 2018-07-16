@@ -18,61 +18,81 @@ onmessage = (event) => {
         var reader = new FileReader();
         reader.onload = (e) => {
             //console.log(e.target.result);
-            if(this.fromFormat===CONST.FORMAT_PNG){
-                
-            }
-            else{
-            var rawImageData = jpegjs.decode(e.target.result);
-            }
-            if (this.usePercent) {
-                this.width = Math.ceil(rawImageData.width * this.percent / 100)
-                this.height = Math.ceil(rawImageData.height * this.percent / 100)
-            }
-            var resizedRawImageData = resizeImage(rawImageData, this.width, this.height);
-            //console.log(resizedRawImageData);
-            
-            //console.log(resizedImage);
-            //var b64encoded = btoa(Uint8ToString(resizedImage.data));
-            if (this.toFormat === CONST.FORMAT_PNG) {
-                var png = new pngjs({
-                    width: this.width,
-                    height: this.height,
-                    bitDepth: 8,
-                    colorType: 6,
-                    inputColorType: 6,
-                    inputHasAlpha: true
-                });
-
-                png.data = resizedRawImageData.data;
-                var stream = png.pack();
-                var chunks = []
-                stream
-                    .on('data', function (chunk) {
-                        chunks.push(chunk)
-                    })
-                    .on('end', function () {
-                        var blob = new Blob(chunks, { type: CONST.FORMATS[CONST.FORMAT_PNG].mimetype })
-                        //console.log(blob)
-                        postMessage({
-                            image: blob,
-                            filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_PNG].extension)
-                        });
+            if (this.fromFormat === CONST.FORMAT_PNG) {
+                new pngjs().parse(e.target.result,
+                    (error, data) => {
+                        if (error) {
+                            console.log(error.message)
+                        } else {
+                            var rawImageData = { data: data.data, width: data.width, height: data.height }
+                            var resizedImageData = resizeRawImage(rawImageData, this.width, this.height, this.usePercent, this.percent)
+                            convertImage(this.toFormat, resizedImageData, this.quality,infile)
+                        }
                     })
             }
             else {
-                var resizedImage = jpegjs.encode({
-                    data: resizedRawImageData.data,
-                    width: this.width,
-                    height: this.height
-                }, this.quality);
-                var blobImage = new Blob([resizedImage.data], { type: CONST.FORMATS[CONST.FORMAT_JPG].mimetype });
-                postMessage({
-                    image: blobImage,
-                    filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_JPG].extension)
-                });
+                var rawImageData = jpegjs.decode(e.target.result);
+                var resizedImageData = resizeRawImage(rawImageData, this.width, this.height, this.usePercent, this.percent)
+                convertImage(this.toFormat, resizedImageData, this.quality,infile)
             }
+
+            //console.log(resizedRawImageData);
+
+            //console.log(resizedImage);
+            //var b64encoded = btoa(Uint8ToString(resizedImage.data));
         }
         reader.readAsArrayBuffer(infile);
     })(this.file);
 
+}
+
+resizeRawImage = (rawImageData, width, height, usePercent, percent) => {
+    this.width = width
+    this.height = height
+    if (usePercent) {
+        this.width = Math.ceil(rawImageData.width * percent / 100)
+        this.height = Math.ceil(rawImageData.height * percent / 100)
+    }
+    return resizeImage(rawImageData, this.width, this.height);
+}
+
+convertImage = (toFormat, resizedRawImageData, quality,infile) => {
+    if (toFormat === CONST.FORMAT_PNG) {
+        var png = new pngjs({
+            width: resizedRawImageData.width,
+            height: resizedRawImageData.height,
+            bitDepth: 8,
+            colorType: 6,
+            inputColorType: 6,
+            inputHasAlpha: true
+        });
+
+        png.data = resizedRawImageData.data;
+        var stream = png.pack();
+        var chunks = []
+        stream
+            .on('data', function (chunk) {
+                chunks.push(chunk)
+            })
+            .on('end', function () {
+                var blob = new Blob(chunks, { type: CONST.FORMATS[CONST.FORMAT_PNG].mimetype })
+                //console.log(blob)
+                postMessage({
+                    image: blob,
+                    filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_PNG].extension)
+                });
+            })
+    }
+    else {
+        var resizedImage = jpegjs.encode({
+            data: resizedRawImageData.data,
+            width: resizedRawImageData.width,
+            height: resizedRawImageData.height
+        }, quality);
+        var blobImage = new Blob([resizedImage.data], { type: CONST.FORMATS[CONST.FORMAT_JPG].mimetype });
+        postMessage({
+            image: blobImage,
+            filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_JPG].extension)
+        });
+    }
 }
