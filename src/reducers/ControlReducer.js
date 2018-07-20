@@ -6,7 +6,7 @@ import {
 
 const initialState = {
     download: false,
-    preview: false,
+    preview: true,
     progress: {
         completed:0,
         total:1,

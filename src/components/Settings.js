@@ -80,7 +80,7 @@ class Settings extends Component {
                             defaultValue={DEFAULT_PERCENT} disabled={!this.props.usePercent} />
                     </div>
                 </div>
-                <div className="row mb-2">
+                <div className={"row mb-2 "+(this.props.toFormat===FORMAT_PNG?"invisible":"visible")}>
                     <div className="col-md-auto">
                         <label htmlFor="customRange" className="col-md-auto col-form-label">
                             Quality ( {this.props.quality} )</label>
@@ -100,6 +100,7 @@ function mapStatetoProps(state) {
     return {
         quality: state.SettingReducer.quality,
         percent: state.SettingReducer.percent,
+        toFormat : state.SettingReducer.toFormat,
         usePercent: state.SettingReducer.usePercent
     }
 }

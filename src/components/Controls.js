@@ -36,7 +36,7 @@ class Controls extends Component {
                 if (this.props.progress.completed + 1 === this.selectfile.files.length)
                     status = "Completed"
                 else
-                    status = "Processing..."
+                    status = Math.round(this.props.progress.completed*100/this.selectfile.files.length)+"%"
                 this.updateProgress({
                     completed: this.props.progress.completed + 1,
                     total: this.selectfile.files.length,
@@ -63,7 +63,7 @@ class Controls extends Component {
         if (this.selectfile.files.length > 0)
             this.lab.innerHTML = this.selectfile.files.length + " Files Chosen"
         else
-            this.lab.innerHTML = "Choose Files"
+            this.lab.innerHTML = "Choose files"
     }
 
     saveByteArray = (() => {
@@ -114,8 +114,9 @@ class Controls extends Component {
 
     render() {
         return (
-            <div className="row mb-4">
-                <div className="col-md-4">
+            <div className="form-container mb-4 sticky-top bg-white">
+            <div className="row">
+                <div className="col">
                     <div className="input-group">
                         <div className="custom-file">
                             <input ref={el => this.selectfile = el} type="file" className="custom-file-input"
@@ -141,12 +142,13 @@ class Controls extends Component {
                         <label className="custom-control-label" htmlFor="inlineCheckbox1">Download</label>
                     </div>
                     <div className="custom-control custom-checkbox float-left p-2">
-                        <input className="custom-control-input" type="checkbox" id="inlineCheckbox2"
+                        <input className="custom-control-input" type="checkbox" checked={true} id="inlineCheckbox2"
                             onChange={evt => this.switchPreview(evt.target.checked)} />
                         <label className="custom-control-label" htmlFor="inlineCheckbox2">Preview</label>
                     </div>
                     <button className="btn btn-primary" onClick={this.resize}>Resize</button>
                 </div>
+            </div>
             </div>
         );
     }
