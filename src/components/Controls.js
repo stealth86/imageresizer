@@ -9,7 +9,7 @@ import {
 } from '../actions/ControlAction';
 import ResizeWorker from '../workers/Resize.worker';
 import './Controls.css';
-import { THREADS,FORMATS } from '../Constants';
+import { THREADS, FORMATS } from '../Constants';
 
 class Controls extends Component {
 
@@ -26,7 +26,7 @@ class Controls extends Component {
 
     componentWillMount = () => {
         var status = "";
-        this.workers=[];
+        this.workers = [];
         for (var i = 0; i < THREADS; i++) {
             this.workers[i] = new ResizeWorker();
         }
@@ -52,8 +52,18 @@ class Controls extends Component {
         })
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.fromFormat !== nextProps.fromFormat) {
+            this.selectfile.value = ""
+            this.updatefiles()
+        }
+    }
+
     updatefiles() {
-        this.lab.innerHTML = this.selectfile.files.length + " Files Chosen";
+        if (this.selectfile.files.length > 0)
+            this.lab.innerHTML = this.selectfile.files.length + " Files Chosen"
+        else
+            this.lab.innerHTML = "Choose Files"
     }
 
     saveByteArray = (() => {
@@ -86,9 +96,9 @@ class Controls extends Component {
             status: ""
         })
         //for (var i = 0; i < (this.selectfile.files.length < THREADS ? this.selectfile.files.length : THREADS); i++) {
-            for(var i=0;i<this.selectfile.files.length;i++){
+        for (var i = 0; i < this.selectfile.files.length; i++) {
             //console.log(i);
-            this.workers[i%THREADS].postMessage({
+            this.workers[i % THREADS].postMessage({
                 file: this.selectfile.files[i],
                 width: this.props.width,
                 height: this.props.height,
