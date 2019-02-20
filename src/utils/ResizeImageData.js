@@ -1,5 +1,3 @@
-'use strict'
-
 function nearestNeighbor (src, dst) {
   let pos = 0
 

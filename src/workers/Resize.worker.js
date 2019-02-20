@@ -1,39 +1,41 @@
-const resizeImage = require("../utils/ResizeImageData");
-const jpegjs = require("jpeg-js");
-const pngjs = require("pngjs").PNG;
-const CONST = require("../Constants");
+import resizeImage from "../utils/ResizeImageData";
+import jpegjs from "jpeg-js";
+import { PNG as pngjs } from "pngjs";
+import * as CONST from "../Constants";
 
-onmessage = (event) => {
-    this.width = event.data.width;
-    this.height = event.data.height;
-    this.quality = event.data.quality;
-    this.file = event.data.file;
-    this.usePercent = event.data.usePercent;
-    this.percent = event.data.percent;
-    this.fromFormat = event.data.fromFormat;
-    this.toFormat = event.data.toFormat;
-    //this.image = event.data.image;
-    //console.log(this.filesToUpload);
+self.onmessage = (event) => {
+    //console.log(this);
+    //console.log(event.data)
+    self.width = event.data.width;
+    self.height = event.data.height;
+    self.quality = event.data.quality;
+    self.file = event.data.file;
+    self.usePercent = event.data.usePercent;
+    self.percent = event.data.percent;
+    self.fromFormat = event.data.fromFormat;
+    self.toFormat = event.data.toFormat;
+    self.image = event.data.image;
+    //console.log(self.filesToUpload);
     ((infile) => {
         var reader = new FileReader();
         reader.onload = (e) => {
             //console.log(e.target.result);
-            if (this.fromFormat === CONST.FORMAT_PNG) {
+            if (self.fromFormat === CONST.FORMAT_PNG) {
                 new pngjs().parse(e.target.result,
                     (error, data) => {
                         if (error) {
                             console.log(error.message)
                         } else {
                             var rawImageData = { data: data.data, width: data.width, height: data.height }
-                            var resizedImageData = resizeRawImage(rawImageData, this.width, this.height, this.usePercent, this.percent)
-                            convertImage(this.toFormat, resizedImageData, this.quality,infile)
+                            var resizedImageData = self.resizeRawImage(rawImageData, self.width, self.height, self.usePercent, self.percent)
+                            self.convertImage(self.toFormat, resizedImageData, self.quality,infile)
                         }
                     })
             }
             else {
                 var rawImageData = jpegjs.decode(e.target.result);
-                var resizedImageData = resizeRawImage(rawImageData, this.width, this.height, this.usePercent, this.percent)
-                convertImage(this.toFormat, resizedImageData, this.quality,infile)
+                var resizedImageData = self.resizeRawImage(rawImageData, self.width, self.height, self.usePercent, self.percent)
+                self.convertImage(self.toFormat, resizedImageData, self.quality,infile)
             }
 
             //console.log(resizedRawImageData);
@@ -42,23 +44,23 @@ onmessage = (event) => {
             //var b64encoded = btoa(Uint8ToString(resizedImage.data));
         }
         reader.readAsArrayBuffer(infile);
-    })(this.file);
+    })(self.file);
 
 }
 
-resizeRawImage = (rawImageData, width, height, usePercent, percent) => {
-    this.width = width
-    this.height = height
+self.resizeRawImage = (rawImageData, width, height, usePercent, percent) => {
+    self.width = width
+    self.height = height
     if (usePercent) {
-        this.width = Math.ceil(rawImageData.width * percent / 100)
-        this.height = Math.ceil(rawImageData.height * percent / 100)
+        self.width = Math.ceil(rawImageData.width * percent / 100)
+        self.height = Math.ceil(rawImageData.height * percent / 100)
     }
-    return resizeImage(rawImageData, this.width, this.height);
+    return resizeImage(rawImageData, self.width, self.height);
 }
 
-convertImage = (toFormat, resizedRawImageData, quality,infile) => {
+self.convertImage = (toFormat, resizedRawImageData, quality,infile) => {
     if (toFormat === CONST.FORMAT_PNG) {
-        var png = new pngjs({
+        let png = new pngjs({
             width: resizedRawImageData.width,
             height: resizedRawImageData.height,
             bitDepth: 8,
@@ -68,8 +70,8 @@ convertImage = (toFormat, resizedRawImageData, quality,infile) => {
         });
 
         png.data = resizedRawImageData.data;
-        var stream = png.pack();
-        var chunks = []
+        let stream = png.pack();
+        let chunks = []
         stream
             .on('data', function (chunk) {
                 chunks.push(chunk)
@@ -77,20 +79,20 @@ convertImage = (toFormat, resizedRawImageData, quality,infile) => {
             .on('end', function () {
                 var blob = new Blob(chunks, { type: CONST.FORMATS[CONST.FORMAT_PNG].mimetype })
                 //console.log(blob)
-                postMessage({
+                self.postMessage({
                     image: blob,
                     filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_PNG].extension)
                 });
             })
     }
     else {
-        var resizedImage = jpegjs.encode({
+        let resizedImage = jpegjs.encode({
             data: resizedRawImageData.data,
             width: resizedRawImageData.width,
             height: resizedRawImageData.height
         }, quality);
-        var blobImage = new Blob([resizedImage.data], { type: CONST.FORMATS[CONST.FORMAT_JPG].mimetype });
-        postMessage({
+        let blobImage = new Blob([resizedImage.data], { type: CONST.FORMATS[CONST.FORMAT_JPG].mimetype });
+        self.postMessage({
             image: blobImage,
             filename: infile.name.replace(/\.[^/.]+$/, "").concat(CONST.FORMATS[CONST.FORMAT_JPG].extension)
         });
